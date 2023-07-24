@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id String @id @db.VarChar(255)
+  username String @db.VarChar(255)
+  email String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  biodata Biodata?
+  address Address?
+  contact Contact?
+  token Token?
+  followers Follower[]
+  portfolios Portfolio[]
+  likes Like[]
+  comments Comment[]
+  bookmarks Bookmark[]
+
+  @@map("users")
+}
+
+model Biodata {
+  biodata_id String @id @db.VarChar(255)
+  study String? @db.VarChar(255)
+  job String? @db.VarChar(255)
+  description String? @db.LongText
+  image String? @db.Text
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("biodatas")
+}
+
+model Address {
+  address_id String @id @db.VarChar(255)
+  country String? @db.VarChar(255) 
+  province String? @db.VarChar(255) 
+  city String? @db.VarChar(255) 
+  postal_code String? @db.VarChar(20)
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Contact {
+  contact_id String @id @db.VarChar(255)
+  no_hp String? @db.VarChar(20)
+  email String? @db.VarChar(255)
+  social_media String? @db.VarChar(255)
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("contacts")
+}
+
+model Token {
+  token_id String @id @db.VarChar(255)
+  refresh_token String @db.Text
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("tokens")
+}
+
+model Follower {
+  follow_id String @id @db.VarChar(255)
+  followed_user_id String @db.VarChar(255)
+  user_id String @db.VarChar(255) 
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("followers")
+}
+
+model Portfolio {
+  portfolio_id String @id @db.VarChar(255)
+  image String? @db.Text
+  title String @db.Text
+  tag String @db.Text
+  link String @db.Text
+  description String? @db.LongText
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  likedBy Like[]
+  commentedBy Comment[]
+  bookmarkedBy Bookmark[]
+
+  @@map("portfolios")
+}
+
+model Like {
+  like_id String @id @db.VarChar(255)
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("likes")
+}
+
+model Comment {
+  comment_id String @id @db.VarChar(255)
+  comment String @db.Text
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Bookmark {
+  bookmark_id String @id @db.VarChar(255)
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("bookmarks")
+}

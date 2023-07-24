@@ -1,0 +1,310 @@
+=========================================================
+| >> STARTUP INIT THE PROJECT				|
+=========================================================
+
+A. Setup awal-------------------------------------------
+--------------------------------------------------------
+##
+1. inisialisasi project => $ npm init
+
+
+=========================================================
+| >> SETUP DB THE PROJECT				|
+=========================================================
+A. Install Prisma--------------------------------------
+--------------------------------------------------------
+1. install prisma: => $ npm install prisma --save-dev
+2. buat basis data pada mySQL client
+3. inisialisasi prisma: => $ npx prisma init
+[akan muncul folder prisma & file schema model prisma & file.env]
+4. ganti nilai atribute "provider" pada object datasource menjadi "mysql"
+5. ganti nilai env variable DATABASE_URL menjadi
+DATABASE_URL="mysql://root:@localhost:3306/profolio_db"
+
+FORMAT URL : "providerDB://user:password@host:port/DBname"
+
+6. Buat model di dalam file "schema.prisma" di folder "prisma"
+
+______START SCRIPT______
+model User {
+  user_id String @id @db.VarChar(255)
+  username String @db.VarChar(255)
+  email String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  biodata Biodata?
+  address Address?
+  contact Contact?
+  token Token?
+  followers Follower[]
+  portfolios Portfolio[]
+  likes Like[]
+  comments Comment[]
+  bookmarks Bookmark[]
+
+  @@map("users")
+}
+
+model Biodata {
+  biodata_id String @id @db.VarChar(255)
+  study String? @db.VarChar(255)
+  job String? @db.VarChar(255)
+  description String? @db.LongText
+  image String? @db.Text
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("biodatas")
+}
+
+model Address {
+  address_id String @id @db.VarChar(255)
+  country String? @db.VarChar(255) 
+  province String? @db.VarChar(255) 
+  city String? @db.VarChar(255) 
+  postal_code String? @db.VarChar(20)
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Contact {
+  contact_id String @id @db.VarChar(255)
+  no_hp String? @db.VarChar(20)
+  email String? @db.VarChar(255)
+  social_media String? @db.VarChar(255)
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("contacts")
+}
+
+model Token {
+  token_id String @id @db.VarChar(255)
+  refresh_token String @db.Text
+  user_id String @db.VarChar(255) @unique
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("tokens")
+}
+
+model Follower {
+  follow_id String @id @db.VarChar(255)
+  followed_user_id String @db.VarChar(255)
+  user_id String @db.VarChar(255) 
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("followers")
+}
+
+model Portfolio {
+  portfolio_id String @id @db.VarChar(255)
+  image String? @db.Text
+  title String @db.Text
+  tag String @db.Text
+  link String @db.Text
+  description String? @db.LongText
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  likedBy Like[]
+  commentedBy Comment[]
+  bookmarkedBy Bookmark[]
+
+  @@map("portfolios")
+}
+
+model Like {
+  like_id String @id @db.VarChar(255)
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("likes")
+}
+
+model Comment {
+  comment_id String @id @db.VarChar(255)
+  comment String @db.Text
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Bookmark {
+  bookmark_id String @id @db.VarChar(255)
+  portfolio_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
+  created_at DateTime @db.Date
+  updated_at DateTime @db.Date
+  portfolio Portfolio @relation(fields: [portfolio_id], references: [portfolio_id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("bookmarks")
+}
+
+______END SCRIPT______
+
+7. ketik untuk melihat preview migrasi: => $ npx prisma migrate dev --create-only --name create_table_allTable
+8. Jika sudah benar, maka lakukan migrasi untuk pembuatan table pada DB: => $ npx prisma migrate dev 
+
+=========================================================
+| >> INSTAL DEPENDENCY PROJECT				|
+=========================================================
+* validator: => $ npm install joi
+* express: => $ npm install express  && $ npm install --save-dev @types/express
+* logger: => $ npm install winston
+* hashing: => $ npm install bcrypt  && $ npm install --save-dev @types/bcrypt
+* id generator: => $ npm install uuid  && $ npm install --save-dev @types/uuid
+* jwt: => $ npm install jsonwebtoken  && $ npm install --save-dev @types/jsonwebtoken
+* cors: => $ npm install cors  && $ npm install --save-dev @types/cors
+* body-parser: => $ npm install body-parser
+* nodemon: => $ npm install --save-dev nodemon
+* venv: => $ npm i dotenv
+
+
+=========================================================
+| >> SETUP UNIT TEST PROJECT				|
+=========================================================
+1. install jest => $ npm install --save-dev jest @types/jest
+2. Install Babel (supaya jest support JS module) => $ npm install --save-dev babel-jest @babel/preset-env
+* doc babel: https://babeljs.io/setup#installation
+3. Tambahkan script berikut pada package.json (timbun atribute default script):
+______START_SCRIPT______
+"scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+______END_SCRIPT______
+4. buat file: babel.config.json
+5. tambahkan script berikut pada file babel.config.json:
+______START_SCRIPT______
+{
+  "presets": ["@babel/preset-env"]
+}
+______END_SCRIPT______
+6. secara default jest berjalan secara pararel, tambahkan flag -i pada script test supaya berjalan secara sequential: 
+______START_SCRIPT______
+"scripts": {
+    "test": "jest -i --runInBand --detectOpenHandles --forceExit"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+______END_SCRIPT______
+7. install supertest untuk unit test pada express => $ npm install --save-dev supertest @types/supertest
+
+=========================================================
+| >> HOW TO RUN UNITEST THE PROJECT			|	
+=========================================================
+
+1. buat folder "tests" pada root folder project
+2. buat file test pada folder "tests" dengan format nama "namefile.test.js"
+3. menjalankan perintah jest secara keseluruhan => $ npm run test
+4. menjalankan perintah jest secara khusus pada sebuah file => 
+$ npx jest tests/namafile.test.ts 
+or 
+$ npm run test tests/namafile.test.ts or 
+
+
+=========================================================
+| >> SETUP SCRIPT PROJECT				|
+=========================================================
+tambahkan command berikut padad atribute script di package.json
+______START_SCRIPT______
+"start": "node src/main.js",
+"dev": "nodemon src/main.ts"
+______END_SCRIPT______
+
+
+=========================================================
+| >> SETUP FILE PROJECT					|
+=========================================================
+1. Buat folder "src/application" dan buat 3 file di dalam folder "application": [web.js, logging.js, database.js]
+
+* pada file logging.js tuliskan script berikut:
+______START_SCRIPT______
+const winston = require("winston");
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [new winston.transports.Console({})],
+});
+
+module.exports = logger;
+______END_SCRIPT______
+
+* pada file web.js tulisakn script berikut:
+______START_SCRIPT______
+const { PrismaClient } = require("@prisma/client");
+const logger = require("./logging");
+
+const prismaClient = new PrismaClient({
+  log: [
+    {
+      emit: "event",
+      level: "query",
+    },
+    {
+      emit: "event",
+      level: "error",
+    },
+    {
+      emit: "event",
+      level: "info",
+    },
+    {
+      emit: "event",
+      level: "warn",
+    },
+  ],
+});
+
+// prismaClient.$on("error", (e) => {
+//   logger.error(e);
+// });
+
+// prismaClient.$on("warn", (e) => {
+//   logger.warn(e);
+// });
+
+// prismaClient.$on("info", (e) => {
+//   logger.info(e);
+// });
+
+// prismaClient.$on("query", (e) => {
+//   logger.info(e);
+// });
+
+module.exports = prismaClient;
+
+
+______END_SCRIPT______
