@@ -11,5 +11,6 @@ privateRouter.post("/auth/logout", authController.logout);
 
 //USER ENDPOINT
 privateRouter.get("/users/:user_id", userController.getUser);
+privateRouter.get("/users/", userController.getListUser);
 
 module.exports = privateRouter;
