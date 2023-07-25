@@ -97,6 +97,7 @@ describe("GET /users/", () => {
       .set("Authorization", `Bearer ${access_token}`);
 
     logger.info("GET LIST USER WITH QUERY SHOULD USING MANUAL TESTING");
+
     expect(result.status).toBe(200);
     expect(result.body.status).toBe(true);
     expect(result.body.status_code).toBe(200);
