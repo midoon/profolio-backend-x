@@ -1,0 +1,106 @@
+const logger = require("../../application/logging");
+const userService = require("../../service/user.service");
+const uploadImage = require("../../util/uploadImage");
+const deleteImage = require("../../util/deleteImage");
+
+const uploadImageToGCS = async (imageFile) => {
+  return await uploadImage(imageFile);
+};
+
+const deleteImageFromGCS = async (imageURL) => {
+  return await deleteImage(imageURL);
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    if (user_id !== req.user.user_id) throw error;
+
+    const biodata = await userService.getBiodata(user_id);
+    const image_url = biodata.image;
+    let new_image_url = image_url !== null ? image_url : null;
+    let deleteImage = null;
+
+    if (req.file && image_url !== null) {
+      new_image_url = await uploadImageToGCS(req.file);
+      deleteImage = await deleteImageFromGCS(image_url);
+    } else if (req.file && image_url === null) {
+      new_image_url = await uploadImageToGCS(req.file);
+    }
+
+    const dataRequest = req.body;
+    if (dataRequest.study || dataRequest.job || dataRequest.description) {
+      const { study = null, job = null, description = null } = dataRequest;
+      const dataBioUpdate = {
+        image: new_image_url,
+        study,
+        job,
+        description,
+        updated_at: new Date(),
+      };
+      const updateBiodata = await userService.updateBiodata(
+        user_id,
+        dataBioUpdate
+      );
+    }
+
+    if (dataRequest.no_hp || dataRequest.email || dataRequest.social_media) {
+      const { no_hp = null, email = null, social_media = null } = dataRequest;
+      const dataContact = {
+        no_hp,
+        email,
+        social_media,
+        updated_at: new Date(),
+      };
+      // update contact()
+      const updateContact = await userService.updateContact(
+        user_id,
+        dataContact
+      );
+    }
+
+    if (
+      dataRequest.country ||
+      dataRequest.province ||
+      dataRequest.city ||
+      dataRequest.postal_code
+    ) {
+      const {
+        country = null,
+        province = null,
+        city = null,
+        postal_code = null,
+      } = dataRequest;
+      const dataAddress = {
+        country,
+        province,
+        city,
+        postal_code,
+        updated_at: new Date(),
+      };
+      // update address()
+      const updateAddress = await userService.updateAddress(
+        user_id,
+        dataAddress
+      );
+    }
+
+    return res.status(200).send({
+      status: true,
+      status_code: 200,
+      message: "Success Update User Data",
+      data: {
+        user_id: user_id,
+      },
+    });
+  } catch (error) {
+    logger.error(`ERROR UPDATE USER`);
+    return res.status(400).send({
+      status: false,
+      status_code: 400,
+      message: "Update User Error",
+    });
+  }
+};
+
+module.exports = updateUser;

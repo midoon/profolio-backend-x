@@ -76,6 +76,7 @@ describe("GET /users/:user_id", () => {
   });
 });
 
+//get list user
 describe("GET /users/", () => {
   beforeEach(async () => {
     await createTestUser();
@@ -122,3 +123,6 @@ describe("GET /users/", () => {
     expect(result.body.message).toBe("Forbidden");
   });
 });
+
+// edit user
+describe("PUT /users/:user_id", () => {});
