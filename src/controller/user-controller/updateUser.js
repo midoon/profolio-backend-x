@@ -2,6 +2,7 @@ const logger = require("../../application/logging");
 const userService = require("../../service/user.service");
 const uploadImage = require("../../util/uploadImage");
 const deleteImage = require("../../util/deleteImage");
+const { updateUserValidation } = require("../../validation/user.validation");
 
 const uploadImageToGCS = async (imageFile) => {
   return await uploadImage(imageFile);
@@ -16,6 +17,15 @@ const updateUser = async (req, res) => {
     const user_id = req.params.user_id;
     if (user_id !== req.user.user_id) throw error;
 
+    const { error, value } = updateUserValidation(req.body);
+    if (error) {
+      return res.status(403).send({
+        status: false,
+        status_code: 403,
+        message: "Validation Error",
+      });
+    }
+
     const biodata = await userService.getBiodata(user_id);
     const image_url = biodata.image;
     let new_image_url = image_url !== null ? image_url : null;
@@ -28,7 +38,16 @@ const updateUser = async (req, res) => {
       new_image_url = await uploadImageToGCS(req.file);
     }
 
-    const dataRequest = req.body;
+    const dataRequest = value;
+
+    if (dataRequest.username) {
+      const dataUserUpdate = {
+        username: dataRequest.username,
+        updated_at: new Date(),
+      };
+      await userService.updateUser(user_id, dataUserUpdate);
+    }
+
     if (dataRequest.study || dataRequest.job || dataRequest.description) {
       const { study = null, job = null, description = null } = dataRequest;
       const dataBioUpdate = {
@@ -38,10 +57,7 @@ const updateUser = async (req, res) => {
         description,
         updated_at: new Date(),
       };
-      const updateBiodata = await userService.updateBiodata(
-        user_id,
-        dataBioUpdate
-      );
+      await userService.updateBiodata(user_id, dataBioUpdate);
     }
 
     if (dataRequest.no_hp || dataRequest.email || dataRequest.social_media) {
@@ -53,10 +69,7 @@ const updateUser = async (req, res) => {
         updated_at: new Date(),
       };
       // update contact()
-      const updateContact = await userService.updateContact(
-        user_id,
-        dataContact
-      );
+      await userService.updateContact(user_id, dataContact);
     }
 
     if (
@@ -79,10 +92,7 @@ const updateUser = async (req, res) => {
         updated_at: new Date(),
       };
       // update address()
-      const updateAddress = await userService.updateAddress(
-        user_id,
-        dataAddress
-      );
+      await userService.updateAddress(user_id, dataAddress);
     }
 
     return res.status(200).send({

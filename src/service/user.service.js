@@ -6,6 +6,7 @@ const getListUser = require("./user-service/getListUser");
 const updateAddress = require("./user-service/updateAddress");
 const updateBiodata = require("./user-service/updateBiodata");
 const updateContact = require("./user-service/updateContact");
+const updateUser = require("./user-service/updateUser");
 const getBiodata = require("./user-service/getBiodata");
 
 module.exports = {
@@ -18,4 +19,5 @@ module.exports = {
   updateBiodata,
   updateContact,
   getBiodata,
+  updateUser,
 };
