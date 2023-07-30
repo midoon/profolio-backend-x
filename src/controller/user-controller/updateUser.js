@@ -48,7 +48,12 @@ const updateUser = async (req, res) => {
       await userService.updateUser(user_id, dataUserUpdate);
     }
 
-    if (dataRequest.study || dataRequest.job || dataRequest.description) {
+    if (
+      dataRequest.study ||
+      dataRequest.job ||
+      dataRequest.description ||
+      new_image_url
+    ) {
       const { study = null, job = null, description = null } = dataRequest;
       const dataBioUpdate = {
         image: new_image_url,

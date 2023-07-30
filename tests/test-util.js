@@ -1,5 +1,7 @@
 const prismaClient = require("../src/application/database");
 const bcrypt = require("bcrypt");
+const deleteImageInGCS = require("../src/util/deleteImage");
+const { v4 } = require("uuid");
 
 const removeTestUser = async () => {
   await prismaClient.user.deleteMany({
@@ -20,9 +22,44 @@ const createTestUser = async () => {
       updated_at: new Date(),
     },
   });
+
+  await prismaClient.biodata.create({
+    data: {
+      biodata_id: v4().toString(),
+      user_id: "id-test-1",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+  await prismaClient.address.create({
+    data: {
+      address_id: v4().toString(),
+      user_id: "id-test-1",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+  await prismaClient.contact.create({
+    data: {
+      contact_id: v4().toString(),
+      user_id: "id-test-1",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+};
+
+const deleteImage = async () => {
+  const biodata = await prismaClient.biodata.findFirst({
+    where: {
+      user_id: "id-test-1",
+    },
+  });
+  await deleteImageInGCS(biodata.image);
 };
 
 module.exports = {
   removeTestUser,
   createTestUser,
+  deleteImage,
 };
