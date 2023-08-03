@@ -19,7 +19,6 @@ const createPortfolio = async (req, res) => {
     let portfolioImageUrl = null;
     if (req.file) {
       portfolioImageUrl = await uploadImage(req.file);
-      console.log(portfolioImageUrl);
     }
 
     const dataPortfolio = {

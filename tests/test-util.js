@@ -68,7 +68,11 @@ const deleteImagePortfolio = async () => {
 };
 
 const deletePortfolio = async () => {
-  await prismaClient.deleteMany({});
+  await prismaClient.portfolio.deleteMany({
+    where: {
+      user_id: "id-test-1",
+    },
+  });
 };
 module.exports = {
   removeTestUser,
