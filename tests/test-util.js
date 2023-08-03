@@ -58,8 +58,22 @@ const deleteImage = async () => {
   await deleteImageInGCS(biodata.image);
 };
 
+const deleteImagePortfolio = async () => {
+  const portFolio = await prismaClient.portfolio.findFirst({
+    where: {
+      user_id: "id-test-1",
+    },
+  });
+  await deleteImageInGCS(portFolio.image);
+};
+
+const deletePortfolio = async () => {
+  await prismaClient.deleteMany({});
+};
 module.exports = {
   removeTestUser,
   createTestUser,
   deleteImage,
+  deleteImagePortfolio,
+  deletePortfolio,
 };
