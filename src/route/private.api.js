@@ -29,4 +29,8 @@ privateRouter.post(
   errorFileMiddleware,
   portfolioCOntroller.createPortfolio
 );
+privateRouter.get(
+  "/portfolios/:portfolio_id",
+  portfolioCOntroller.getPortfolio
+);
 module.exports = privateRouter;

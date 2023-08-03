@@ -1,4 +1,6 @@
 const portfolioService = require("../../service/portfolio.service");
+const logger = require("../../application/logging");
+
 const {
   createPortfolioValidation,
 } = require("../../validation/profolio.validation");
@@ -39,7 +41,12 @@ const createPortfolio = async (req, res) => {
       message: "Success Create Portfolio Data",
     });
   } catch (error) {
-    throw error;
+    logger.error(`ERROR CREATE PORTFOLIO`);
+    return res.status(400).send({
+      status: false,
+      status_code: 400,
+      message: "Create Portfolio Error",
+    });
   }
 };
 
