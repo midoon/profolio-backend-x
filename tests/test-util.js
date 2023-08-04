@@ -74,10 +74,21 @@ const deletePortfolio = async () => {
     },
   });
 };
+
+const getPortfolioId = async () => {
+  const portfolio = await prismaClient.portfolio.findFirst({
+    where: {
+      user_id: "id-test-1",
+    },
+  });
+
+  return portfolio.portfolio_id;
+};
 module.exports = {
   removeTestUser,
   createTestUser,
   deleteImage,
   deleteImagePortfolio,
   deletePortfolio,
+  getPortfolioId,
 };

@@ -2,9 +2,9 @@ const logger = require("../src/application/logging");
 const {
   removeTestUser,
   createTestUser,
-  deleteImage,
   deleteImagePortfolio,
   deletePortfolio,
+  getPortfolioId,
 } = require("./test-util");
 const supertest = require("supertest");
 const app = require("../src/application/web");
@@ -113,6 +113,90 @@ describe("POST /portfolios/", () => {
       link: "test.com",
       description: "test desc",
     });
+
+    expect(result.status).toBe(403);
+    expect(result.body.status).toBe(false);
+    expect(result.body.status_code).toBe(403);
+    expect(result.body.message).toBe("Forbidden");
+  });
+});
+
+//GET PORTFOLIO BY ID
+describe("GET /portfolios/:portfolios_id", () => {
+  beforeEach(async () => {
+    await createTestUser();
+  });
+
+  afterEach(async () => {
+    await removeTestUser();
+    await deletePortfolio();
+  });
+
+  it("should can get portfolio data", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+
+    const jsonData = {
+      title: "test title",
+      tag: "tag,test",
+      link: "test.com",
+      description: "test desc",
+    };
+
+    // Baca konten file sebagai buffer
+    const fs = require("fs");
+    const path = require("path");
+    const fileContent = fs.readFileSync(
+      path.join(__dirname, "/assetsTesting/testImg.png")
+    );
+
+    const createPortfolio = await supertest(app)
+      .post(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`)
+      .attach("image", fileContent, "testImg.png")
+      .field("title", jsonData.title)
+      .field("tag", jsonData.tag)
+      .field("link", jsonData.link)
+      .field("description", jsonData.description);
+
+    const portfolios_id = await getPortfolioId();
+
+    const result = await supertest(app)
+      .get(`/portfolios/${portfolios_id}`)
+      .set("Authorization", `Bearer ${access_token}`);
+    await deleteImagePortfolio();
+
+    expect(result.status).toBe(200);
+    expect(result.body.status).toBe(true);
+    expect(result.body.status_code).toBe(200);
+    expect(result.body.data).toBeDefined();
+  });
+
+  it("shoud not found portfolio if wrong portfolio_id", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+    const result = await supertest(app)
+      .get(`/portfolios/salah`)
+      .set("Authorization", `Bearer ${access_token}`);
+
+    expect(result.status).toBe(404);
+    expect(result.body.status).toBe(false);
+    expect(result.body.status_code).toBe(404);
+    expect(result.body.message).toBe("Portfolio Not Found");
+  });
+
+  it("should can reject if user aunautorized", async () => {
+    const result = await supertest(app).get(`/portfolios/salah`);
 
     expect(result.status).toBe(403);
     expect(result.body.status).toBe(false);

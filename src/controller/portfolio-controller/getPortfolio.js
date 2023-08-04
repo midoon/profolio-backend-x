@@ -6,6 +6,13 @@ const getPortfolio = async (req, res) => {
     const portfolio = await portfolioService.getPortfolio(
       req.params.portfolio_id
     );
+    if (portfolio === null) {
+      return res.status(404).send({
+        status: false,
+        status_code: 404,
+        message: "Portfolio Not Found",
+      });
+    }
     return res.status(200).send({
       status: true,
       status_code: 200,

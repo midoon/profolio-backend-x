@@ -276,19 +276,11 @@ describe("POST /auth/logout", () => {
   });
 
   it("should reject logout if wrong access token", async () => {
-    const logedUser = await supertest(app).post("/auth/login").send({
-      password: "12345678",
-      email: "test@gmail.com",
-    });
-
-    const access_token = logedUser.body.data.access_token;
-    const user_id = logedUser.body.data.user_id;
-
     const result = await supertest(app)
       .post("/auth/logout")
-      .set("Authorization", `Bearer ${access_token}x`)
+      .set("Authorization", `Bearer x`)
       .send({
-        user_id: user_id,
+        user_id: "id-test-1",
       });
 
     expect(result.status).toBe(403);
@@ -298,16 +290,8 @@ describe("POST /auth/logout", () => {
   });
 
   it("should reject logout if request not contain access token", async () => {
-    const logedUser = await supertest(app).post("/auth/login").send({
-      password: "12345678",
-      email: "test@gmail.com",
-    });
-
-    const access_token = logedUser.body.data.access_token;
-    const user_id = logedUser.body.data.user_id;
-
     const result = await supertest(app).post("/auth/logout").send({
-      user_id: user_id,
+      user_id: "id-test-1",
     });
 
     expect(result.status).toBe(403);
