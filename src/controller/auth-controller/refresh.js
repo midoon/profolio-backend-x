@@ -37,7 +37,6 @@ const refresh = async (req, res) => {
       data: { access_token },
     });
   } catch (error) {
-    logger.error(`ERROR REFRESH`);
     return res.status(400).send({
       status: false,
       status_code: 400,

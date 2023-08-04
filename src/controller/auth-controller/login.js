@@ -65,7 +65,6 @@ const login = async (req, res) => {
       data: dataResponse,
     });
   } catch (error) {
-    logger.error(`ERROR LOGIN `);
     return res.status(400).send({
       status: false,
       status_code: 400,

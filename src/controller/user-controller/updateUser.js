@@ -109,7 +109,6 @@ const updateUser = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error(`ERROR UPDATE USER`);
     return res.status(400).send({
       status: false,
       status_code: 400,

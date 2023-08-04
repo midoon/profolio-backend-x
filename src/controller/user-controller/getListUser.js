@@ -28,7 +28,6 @@ const getListUser = async (req, res) => {
       });
     }
   } catch (error) {
-    logger.error(`ERROR GET LIST USER `);
     return res.status(400).send({
       status: false,
       status_code: 400,

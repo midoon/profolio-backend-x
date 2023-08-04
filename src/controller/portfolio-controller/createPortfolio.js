@@ -41,7 +41,6 @@ const createPortfolio = async (req, res) => {
       message: "Success Create Portfolio Data",
     });
   } catch (error) {
-    logger.error(`ERROR CREATE PORTFOLIO`);
     return res.status(400).send({
       status: false,
       status_code: 400,

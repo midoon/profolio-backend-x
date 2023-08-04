@@ -20,7 +20,6 @@ const getPortfolio = async (req, res) => {
       data: portfolio,
     });
   } catch (error) {
-    logger.error(`ERROR GET PORTFOLIO `);
     return res.status(400).send({
       status: false,
       status_code: 400,

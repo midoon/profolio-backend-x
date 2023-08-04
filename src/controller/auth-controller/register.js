@@ -62,7 +62,6 @@ const register = async (req, res) => {
       message: "Success Registration",
     });
   } catch (error) {
-    logger.error(`ERROR REGISTER `);
     return res.status(400).send({
       status: false,
       status_code: 400,

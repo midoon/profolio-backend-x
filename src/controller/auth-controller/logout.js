@@ -20,7 +20,6 @@ const logout = async (req, res) => {
       .status(200)
       .send({ status: true, status_code: 200, message: "Success logout" });
   } catch (error) {
-    logger.error(`ERROR LOGOUT`);
     return res.status(400).send({
       status: false,
       status_code: 400,

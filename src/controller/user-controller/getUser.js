@@ -14,7 +14,6 @@ const getUser = async (req, res) => {
       data: dataRes,
     });
   } catch (error) {
-    logger.error(`ERROR GET USER `);
     return res.status(400).send({
       status: false,
       status_code: 400,
