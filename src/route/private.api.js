@@ -33,4 +33,5 @@ privateRouter.get(
   "/portfolios/:portfolio_id",
   portfolioCOntroller.getPortfolio
 );
+privateRouter.get("/portfolios/", portfolioCOntroller.getAllPortfolio);
 module.exports = privateRouter;
