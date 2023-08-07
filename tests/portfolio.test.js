@@ -430,3 +430,149 @@ describe("PUT /portfolios/:portfolio_id", () => {
     expect(result.body.message).toBe("Update Portfolio Error");
   });
 });
+
+//LIST PORTFOLIO
+
+describe("GET /portfolios/", () => {
+  beforeEach(async () => {
+    await createTestUser();
+  });
+
+  afterEach(async () => {
+    await removeTestUser();
+    await deletePortfolio();
+  });
+
+  it("should can get list porto with default page=1", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+
+    const jsonData = {
+      title: "test title",
+      tag: "tag,test",
+      link: "test.com",
+      description: "test desc",
+    };
+
+    // Baca konten file sebagai buffer
+    const fs = require("fs");
+    const path = require("path");
+    const fileContent = fs.readFileSync(
+      path.join(__dirname, "/assetsTesting/testImg.png")
+    );
+
+    const createPortfolio = await supertest(app)
+      .post(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`)
+      .attach("image", fileContent, "testImg.png")
+      .field("title", jsonData.title)
+      .field("tag", jsonData.tag)
+      .field("link", jsonData.link)
+      .field("description", jsonData.description);
+
+    const result = await supertest(app)
+      .get(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`);
+
+    await deleteImagePortfolio();
+
+    expect(result.status).toBe(200);
+    expect(result.body.status).toBe(true);
+    expect(result.body.status_code).toBe(200);
+    expect(result.body.data.portfolios).toBeDefined();
+    expect(result.body.data.paging).toBeDefined();
+  });
+
+  it("shoud can show portfolio with test tag from query params", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+
+    const jsonData = {
+      title: "test title",
+      tag: "tag,test",
+      link: "test.com",
+      description: "test desc",
+    };
+
+    // Baca konten file sebagai buffer
+    const fs = require("fs");
+    const path = require("path");
+    const fileContent = fs.readFileSync(
+      path.join(__dirname, "/assetsTesting/testImg.png")
+    );
+
+    const createPortfolio = await supertest(app)
+      .post(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`)
+      .attach("image", fileContent, "testImg.png")
+      .field("title", jsonData.title)
+      .field("tag", jsonData.tag)
+      .field("link", jsonData.link)
+      .field("description", jsonData.description);
+
+    const result = await supertest(app)
+      .get(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`)
+      .query({ tag: "test" });
+
+    await deleteImagePortfolio();
+
+    expect(result.status).toBe(200);
+    expect(result.body.status).toBe(true);
+    expect(result.body.status_code).toBe(200);
+    expect(result.body.data.portfolios).toBeDefined();
+    expect(result.body.data.paging).toBeDefined();
+  });
+
+  it("should reject if user anauthorized", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+
+    const jsonData = {
+      title: "test title",
+      tag: "tag,test",
+      link: "test.com",
+      description: "test desc",
+    };
+
+    // Baca konten file sebagai buffer
+    const fs = require("fs");
+    const path = require("path");
+    const fileContent = fs.readFileSync(
+      path.join(__dirname, "/assetsTesting/testImg.png")
+    );
+
+    const createPortfolio = await supertest(app)
+      .post(`/portfolios/`)
+      .set("Authorization", `Bearer ${access_token}`)
+      .attach("image", fileContent, "testImg.png")
+      .field("title", jsonData.title)
+      .field("tag", jsonData.tag)
+      .field("link", jsonData.link)
+      .field("description", jsonData.description);
+
+    const result = await supertest(app).get(`/portfolios/`);
+
+    await deleteImagePortfolio();
+
+    expect(result.status).toBe(403);
+    expect(result.body.status).toBe(false);
+    expect(result.body.status_code).toBe(403);
+    expect(result.body.message).toBe("Forbidden");
+  });
+});
