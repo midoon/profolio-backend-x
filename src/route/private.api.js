@@ -34,4 +34,10 @@ privateRouter.get(
   portfolioCOntroller.getPortfolio
 );
 privateRouter.get("/portfolios/", portfolioCOntroller.getAllPortfolio);
+privateRouter.put(
+  "/portfolios/:portfolio_id",
+  multerMiddleware.single("image"),
+  errorFileMiddleware,
+  portfolioCOntroller.updatePortfolio
+);
 module.exports = privateRouter;

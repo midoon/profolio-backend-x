@@ -1,6 +1,5 @@
 const portfolioService = require("../../service/portfolio.service");
 const logger = require("../../application/logging");
-
 const {
   createPortfolioValidation,
 } = require("../../validation/profolio.validation");

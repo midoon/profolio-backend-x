@@ -11,4 +11,14 @@ const createPortfolioValidation = (payload) => {
   return schema.validate(payload, { abortEarly: false });
 };
 
-module.exports = { createPortfolioValidation };
+const updatePortfolioValidation = (payload) => {
+  const schema = Joi.object({
+    title: Joi.string().optional(),
+    tag: Joi.string().optional(),
+    link: Joi.string().optional(),
+    description: Joi.string().optional(),
+  });
+  return schema.validate(payload, { abortEarly: false });
+};
+
+module.exports = { createPortfolioValidation, updatePortfolioValidation };
