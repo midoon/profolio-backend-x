@@ -15,7 +15,13 @@ const deleteImageFromGCS = async (imageURL) => {
 const updateUser = async (req, res) => {
   try {
     const user_id = req.params.user_id;
-    if (user_id !== req.user.user_id) throw error;
+    if (user_id !== req.user.user_id) {
+      return res.status(403).send({
+        status: false,
+        status_code: 403,
+        message: "Unauthorized",
+      });
+    }
 
     const { error, value } = updateUserValidation(req.body);
     if (error) {

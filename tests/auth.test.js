@@ -240,10 +240,10 @@ describe("POST /auth/logout", () => {
         user_id: "id salah",
       });
 
-    expect(result.status).toBe(400);
+    expect(result.status).toBe(403);
     expect(result.body.status).toBe(false);
-    expect(result.body.status_code).toBe(400);
-    expect(result.body.message).toBe("Logout Error");
+    expect(result.body.status_code).toBe(403);
+    expect(result.body.message).toBe("Unauthorized");
   });
 
   it("should reject logout if when have logout in the begening", async () => {

@@ -14,7 +14,13 @@ const logout = async (req, res) => {
   const user_id = value.user_id;
   const user = req.user;
   try {
-    if (user_id !== user.user_id) throw error;
+    if (user_id !== user.user_id) {
+      return res.status(403).send({
+        status: false,
+        status_code: 403,
+        message: "Unauthorized",
+      });
+    }
     const deleteSession = await authService.deleteRefreshToken(user_id);
     return res
       .status(200)
