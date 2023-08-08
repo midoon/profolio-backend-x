@@ -40,4 +40,8 @@ privateRouter.put(
   errorFileMiddleware,
   portfolioCOntroller.updatePortfolio
 );
+privateRouter.delete(
+  "/portfolios/:portfolio_id",
+  portfolioCOntroller.deletePortfolio
+);
 module.exports = privateRouter;
