@@ -49,4 +49,8 @@ privateRouter.delete(
 
 //BEHAVIOR ENDPOINT
 privateRouter.post("/portfolios/likes/:portfolio_id", behaviorController.like);
+privateRouter.post(
+  "/portfolios/comments/:portfolio_id",
+  behaviorController.comment
+);
 module.exports = privateRouter;
