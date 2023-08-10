@@ -13,6 +13,8 @@ const getUser = async (user_id) => {
         contact: true,
         address: true,
         portfolios: true,
+        bookmarks: true,
+        followings: true,
       },
     });
     return user;

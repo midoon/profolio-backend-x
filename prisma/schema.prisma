@@ -21,7 +21,7 @@ model User {
   address Address?
   contact Contact?
   token Token?
-  followers Follower[]
+  followings Follower[]
   portfolios Portfolio[]
   likes Like[]
   comments Comment[]
