@@ -11,6 +11,10 @@ const getAllPortfolio = async (dataPageQuery) => {
           contains: tagQuery,
         },
       },
+      include: {
+        likedBy: true,
+        commentedBy: true,
+      },
       orderBy: {
         created_at: "desc",
       },

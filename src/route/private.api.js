@@ -1,7 +1,9 @@
 const express = require("express");
 const authController = require("../controller/auth.controller");
 const userController = require("../controller/user.controller");
-const portfolioCOntroller = require("../controller/portfolio.controller");
+const portfolioController = require("../controller/portfolio.controller");
+const behaviorController = require("../controller/behavior.controller");
+
 const authMiddleware = require("../middleware/auth.middleware");
 const multerMiddleware = require("../middleware/multer.middleware");
 const errorFileMiddleware = require("../middleware/errorFile.middleware");
@@ -22,26 +24,29 @@ privateRouter.put(
   userController.updateUser
 );
 
-// PORTFOLIO CONTROLLER
+// PORTFOLIO ENDPOINT
 privateRouter.post(
   "/portfolios/",
   multerMiddleware.single("image"),
   errorFileMiddleware,
-  portfolioCOntroller.createPortfolio
+  portfolioController.createPortfolio
 );
 privateRouter.get(
   "/portfolios/:portfolio_id",
-  portfolioCOntroller.getPortfolio
+  portfolioController.getPortfolio
 );
-privateRouter.get("/portfolios/", portfolioCOntroller.getAllPortfolio);
+privateRouter.get("/portfolios/", portfolioController.getAllPortfolio);
 privateRouter.put(
   "/portfolios/:portfolio_id",
   multerMiddleware.single("image"),
   errorFileMiddleware,
-  portfolioCOntroller.updatePortfolio
+  portfolioController.updatePortfolio
 );
 privateRouter.delete(
   "/portfolios/:portfolio_id",
-  portfolioCOntroller.deletePortfolio
+  portfolioController.deletePortfolio
 );
+
+//BEHAVIOR ENDPOINT
+privateRouter.post("/portfolios/likes/:portfolio_id", behaviorController.like);
 module.exports = privateRouter;
