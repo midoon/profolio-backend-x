@@ -1,8 +1,8 @@
 const prismaClient = require("../../application/database");
 
-const unlike = async (portfolio_id, user_id) => {
+const bookmark = async (portfolio_id, user_id) => {
   try {
-    return await prismaClient.like.deleteMany({
+    const countPortfolio = await prismaClient.bookmark.count({
       where: {
         AND: [
           {
@@ -14,9 +14,10 @@ const unlike = async (portfolio_id, user_id) => {
         ],
       },
     });
+    return countPortfolio;
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = unlike;
+module.exports = bookmark;

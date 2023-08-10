@@ -53,4 +53,8 @@ privateRouter.post(
   "/portfolios/comments/:portfolio_id",
   behaviorController.comment
 );
+privateRouter.post(
+  "/portfolios/bookmarks/:portfolio_id",
+  behaviorController.bookmark
+);
 module.exports = privateRouter;
