@@ -57,4 +57,5 @@ privateRouter.post(
   "/portfolios/bookmarks/:portfolio_id",
   behaviorController.bookmark
 );
+privateRouter.post("/follows/:user_id", behaviorController.follow);
 module.exports = privateRouter;

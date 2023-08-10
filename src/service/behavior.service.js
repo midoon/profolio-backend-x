@@ -5,6 +5,9 @@ const comment = require("./behavior-service/comment");
 const bookmark = require("./behavior-service/bookmark");
 const bookmarkIsExist = require("./behavior-service/bookmarkIsExist");
 const unBookmark = require("./behavior-service/unBookmark");
+const follow = require("./behavior-service/follow");
+const followIsExist = require("./behavior-service/followIsExist");
+const unfollow = require("./behavior-service/unfollow");
 
 module.exports = {
   like,
@@ -14,4 +17,7 @@ module.exports = {
   bookmark,
   bookmarkIsExist,
   unBookmark,
+  follow,
+  followIsExist,
+  unfollow,
 };
