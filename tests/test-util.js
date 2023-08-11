@@ -84,6 +84,21 @@ const getPortfolioId = async () => {
 
   return portfolio.portfolio_id;
 };
+
+const createPortfolio = async () => {
+  await prismaClient.portfolio.create({
+    data: {
+      portfolio_id: "portfolio-id-test",
+      title: "test-title",
+      tag: "test,tag",
+      link: "test.com",
+      user_id: "id-test-1",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+};
+
 module.exports = {
   removeTestUser,
   createTestUser,
@@ -91,4 +106,5 @@ module.exports = {
   deleteImagePortfolio,
   deletePortfolio,
   getPortfolioId,
+  createPortfolio,
 };

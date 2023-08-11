@@ -9,7 +9,7 @@ const like = async (req, res) => {
 
     if (countLikeIsExist !== 0) {
       await behaviorService.unlike(req.params.portfolio_id, req.user.user_id);
-      return res.status(201).send({
+      return res.status(200).send({
         status: true,
         status_code: 200,
         message: "Success Unlike Portfolio",

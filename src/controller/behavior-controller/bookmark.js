@@ -12,7 +12,7 @@ const bookmark = async (req, res) => {
         req.params.portfolio_id,
         req.user.user_id
       );
-      return res.status(201).send({
+      return res.status(200).send({
         status: true,
         status_code: 200,
         message: "Success UnBookmark Portfolio",
