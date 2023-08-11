@@ -8,6 +8,7 @@ const unBookmark = require("./behavior-service/unBookmark");
 const follow = require("./behavior-service/follow");
 const followIsExist = require("./behavior-service/followIsExist");
 const unfollow = require("./behavior-service/unfollow");
+const userIsExistById = require("./behavior-service/userIsExistById");
 
 module.exports = {
   like,
@@ -20,4 +21,5 @@ module.exports = {
   follow,
   followIsExist,
   unfollow,
+  userIsExistById,
 };

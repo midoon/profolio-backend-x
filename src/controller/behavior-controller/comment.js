@@ -9,7 +9,7 @@ const comment = async (req, res) => {
       return res.status(403).send({
         status: false,
         status_code: 403,
-        message: "Validation error",
+        message: "Validation Error",
       });
     }
     const dataComment = {

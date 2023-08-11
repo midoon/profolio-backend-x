@@ -6,7 +6,9 @@ const { v4 } = require("uuid");
 const removeTestUser = async () => {
   await prismaClient.user.deleteMany({
     where: {
-      username: "usernameTest",
+      username: {
+        contains: "usernameTest",
+      },
     },
   });
 };
@@ -43,6 +45,44 @@ const createTestUser = async () => {
     data: {
       contact_id: v4().toString(),
       user_id: "id-test-1",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+};
+
+const createTestUser2 = async () => {
+  await prismaClient.user.create({
+    data: {
+      user_id: "id-test-2",
+      username: "usernameTest2",
+      password: await bcrypt.hash("12345678", 10),
+      email: "test2@gmail.com",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+
+  await prismaClient.biodata.create({
+    data: {
+      biodata_id: v4().toString(),
+      user_id: "id-test-2",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+  await prismaClient.address.create({
+    data: {
+      address_id: v4().toString(),
+      user_id: "id-test-2",
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
+  await prismaClient.contact.create({
+    data: {
+      contact_id: v4().toString(),
+      user_id: "id-test-2",
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -107,4 +147,5 @@ module.exports = {
   deletePortfolio,
   getPortfolioId,
   createPortfolio,
+  createTestUser2,
 };

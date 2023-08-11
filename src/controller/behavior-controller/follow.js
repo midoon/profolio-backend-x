@@ -3,6 +3,18 @@ const behaviorService = require("../../service/behavior.service");
 
 const follow = async (req, res) => {
   try {
+    const followedUserIsExist = await behaviorService.userIsExistById(
+      req.params.user_id
+    );
+
+    if (followedUserIsExist === 0) {
+      return res.status(404).send({
+        status: false,
+        status_code: 404,
+        message: "User Not Found",
+      });
+    }
+
     const countFollow = await behaviorService.followIsExist(
       req.params.user_id,
       req.user.user_id
