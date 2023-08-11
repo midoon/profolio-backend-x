@@ -364,4 +364,21 @@ describe("POST /follows/:user_id", () => {
     expect(result.body.status_code).toBe(404);
     expect(result.body.message).toBe("User Not Found");
   });
+
+  it("should reject follow if user unauthorized", async () => {
+    const logedUser = await supertest(app).post("/auth/login").send({
+      password: "12345678",
+      email: "test@gmail.com",
+    });
+
+    const access_token = logedUser.body.data.access_token;
+    const user_id = logedUser.body.data.user_id;
+
+    const result = await supertest(app).post("/follows/x");
+
+    expect(result.status).toBe(403);
+    expect(result.body.status).toBe(false);
+    expect(result.body.status_code).toBe(403);
+    expect(result.body.message).toBe("Forbidden");
+  });
 });
